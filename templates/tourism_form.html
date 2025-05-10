@@ -1,0 +1,60 @@
+{% extends 'base.html' %} {% block content %}
+<div class="max-w-2xl mx-auto">
+  <h1 class="text-2xl font-bold mb-6">
+    {{ 'Edit' if item else 'Tambah' }} Data Wisata
+  </h1>
+
+  <form method="post" class="bg-white p-6 shadow-lg rounded-lg space-y-6">
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-gray-700">Tanggal</label>
+      <input
+        type="date"
+        name="date"
+        value="{{ item.date.strftime('%Y-%m-%d') if item else '' }}"
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+        required
+      />
+    </div>
+
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-gray-700"
+        >Harga Tiket (Rp)</label
+      >
+      <div class="relative">
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+          >Rp</span
+        >
+        <input
+          type="number"
+          step="any"
+          name="ticket_price"
+          value="{{ item.ticket_price if item else '' }}"
+          class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-gray-700"
+        >Jumlah Pengunjung</label
+      >
+      <input
+        type="number"
+        name="visitor_count"
+        value="{{ item.visitor_count if item else '' }}"
+        min="0"
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+        required
+      />
+    </div>
+
+    <button
+      type="submit"
+      class="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition-colors font-medium"
+    >
+      Simpan
+    </button>
+  </form>
+</div>
+{% endblock %}

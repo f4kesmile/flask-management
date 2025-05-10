@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fine Bery Dashboard Management</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <!-- Tambahkan Font Awesome untuk ikon -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+
+    <style>
+      .nav-active {
+        position: relative;
+        color: #2563eb;
+      }
+      .nav-active::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: #2563eb;
+        animation: slide-in 0.3s ease-out;
+      }
+      @keyframes slide-in {
+        from {
+          transform: scaleX(0);
+        }
+        to {
+          transform: scaleX(1);
+        }
+      }
+
+      /* Mobile menu styles */
+      .mobile-menu {
+        display: none;
+      }
+      .mobile-menu.active {
+        display: block;
+        animation: fadeIn 0.3s ease-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <nav class="bg-white shadow">
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+          <!-- Logo Section -->
+          <div class="flex items-center flex-shrink-0">
+            <img
+              class="h-12 w-auto mr-2"
+              src="https://iili.io/3kXn2dg.png"
+              alt="Fin Berry Logo"
+            />
+            <span class="font-semibold text-xl">Fin Berry</span>
+          </div>
+
+          <!-- Desktop Navigation (Hidden on Mobile) -->
+          <div class="hidden md:flex items-center justify-center flex-1">
+            <div class="flex space-x-4">
+              <a
+                href="{{ url_for('dashboard') }}"
+                class="px-3 py-2 rounded-md text-lg font-medium hover:text-blue-600 transition-colors relative {% if request.path == url_for('dashboard') %}nav-active text-blue-600{% else %}text-gray-600{% endif %}"
+              >
+                Home
+              </a>
+              <a
+                href="{{ url_for('production_list') }}"
+                class="px-3 py-2 rounded-md text-lg font-medium hover:text-blue-600 transition-colors relative {% if request.path == url_for('production_list') %}nav-active text-blue-600{% else %}text-gray-600{% endif %}"
+              >
+                Biaya Produksi
+              </a>
+              <a
+                href="{{ url_for('revenue_list') }}"
+                class="px-3 py-2 rounded-md text-lg font-medium hover:text-blue-600 transition-colors relative {% if request.path == url_for('revenue_list') %}nav-active text-blue-600{% else %}text-gray-600{% endif %}"
+              >
+                Pendapatan
+              </a>
+              <a
+                href="{{ url_for('tourism_list') }}"
+                class="px-3 py-2 rounded-md text-lg font-medium hover:text-blue-600 transition-colors relative {% if request.path == url_for('tourism_list') %}nav-active text-blue-600{% else %}text-gray-600{% endif %}"
+              >
+                Wisata
+              </a>
+              <a
+                href="{{ url_for('journal_add') }}"
+                class="px-3 py-2 rounded-md text-lg font-medium hover:text-blue-600 transition-colors relative {% if request.path == url_for('journal_add') %}nav-active text-blue-600{% else %}text-gray-600{% endif %}"
+              >
+                Jurnal Umum
+              </a>
+            </div>
+          </div>
+
+          <!-- Mobile menu button -->
+          <div class="md:hidden">
+            <button
+              id="mobile-menu-button"
+              class="text-gray-600 hover:text-blue-600 focus:outline-none"
+            >
+              <i class="fas fa-bars text-2xl"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile Menu (Hidden by Default) -->
+        <div id="mobile-menu" class="mobile-menu md:hidden pb-4">
+          <div class="flex flex-col space-y-2 mt-2">
+            <a
+              href="{{ url_for('dashboard') }}"
+              class="px-3 py-2 rounded-md text-lg font-medium hover:text-blue-600 transition-colors relative {% if request.path == url_for('dashboard') %}nav-active text-blue-600{% else %}text-gray-600{% endif %}"
+            >
+              Home
+            </a>
+            <a
+              href="{{ url_for('production_list') }}"
+              class="px-3 py-2 rounded-md text-lg font-medium hover:text-blue-600 transition-colors relative {% if request.path == url_for('production_list') %}nav-active text-blue-600{% else %}text-gray-600{% endif %}"
+            >
+              Biaya Produksi
+            </a>
+            <a
+              href="{{ url_for('revenue_list') }}"
+              class="px-3 py-2 rounded-md text-lg font-medium hover:text-blue-600 transition-colors relative {% if request.path == url_for('revenue_list') %}nav-active text-blue-600{% else %}text-gray-600{% endif %}"
+            >
+              Pendapatan
+            </a>
+            <a
+              href="{{ url_for('tourism_list') }}"
+              class="px-3 py-2 rounded-md text-lg font-medium hover:text-blue-600 transition-colors relative {% if request.path == url_for('tourism_list') %}nav-active text-blue-600{% else %}text-gray-600{% endif %}"
+            >
+              Wisata
+            </a>
+            <a
+              href="{{ url_for('journal_add') }}"
+              class="px-3 py-2 rounded-md text-lg font-medium hover:text-blue-600 transition-colors relative {% if request.path == url_for('journal_add') %}nav-active text-blue-600{% else %}text-gray-600{% endif %}"
+            >
+              Jurnal Umum
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mx-auto p-4">{% block content %}{% endblock %}</div>
+
+    <!-- JavaScript untuk toggle mobile menu -->
+    <script>
+      document
+        .getElementById("mobile-menu-button")
+        .addEventListener("click", function () {
+          const menu = document.getElementById("mobile-menu");
+          menu.classList.toggle("active");
+        });
+    </script>
+  </body>
+</html>

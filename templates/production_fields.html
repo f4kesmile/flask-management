@@ -1,0 +1,33 @@
+<div class="grid grid-cols-2 gap-4">
+  {% for field in ['date', 'land_area', 'seed_cost', 'fertilizer_cost',
+  'medicine_cost', 'labor_cost', 'electricity_cost', 'water_cost'] %}
+  <div>
+    <label class="block text-sm font-medium text-gray-700">
+      {% if field == 'date' %}Tanggal {% elif field == 'land_area' %}Luas Lahan
+      {% elif field == 'seed_cost' %}Biaya Bibit {% elif field ==
+      'fertilizer_cost' %}Biaya Pupuk {% elif field == 'medicine_cost' %}Biaya
+      Obat-obatan {% elif field == 'labor_cost' %}Biaya Pekerja {% elif field ==
+      'electricity_cost' %}Biaya Listrik {% elif field == 'water_cost' %}Biaya
+      Air {% endif %}
+    </label>
+    {% if field == 'date' %}
+    <input
+      type="date"
+      name="{{ field }}"
+      value="{{ item.date.strftime('%Y-%m-%d') if item else '' }}"
+      class="border p-2 w-full rounded"
+      required
+    />
+    {% else %}
+    <input
+      type="number"
+      step="any"
+      name="{{ field }}"
+      value="{{ item[field] if item else '' }}"
+      class="border p-2 w-full rounded"
+      required
+    />
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>

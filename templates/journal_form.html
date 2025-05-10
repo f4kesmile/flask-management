@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1 class="text-2xl font-bold mb-4">
+    {{ 'Edit' if transaction else 'Tambah' }} Transaksi Jurnal
+  </h1>
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="mb-4">
+        {% for category, msg in messages %}
+          <p class="text-{{ 'red' if category=='error' else 'green' }}-600">{{ msg }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <form method="post" action="{{ url_for('journal_' + ('edit' if transaction else 'add'), id=transaction.id if transaction else None) }}" class="bg-white p-6 shadow rounded space-y-4">
+    <!-- Input Tanggal -->
+    <div>
+      <label class="block text-sm font-medium">Tanggal</label>
+      <input type="date" name="date"
+             value="{{ transaction.date.strftime('%Y-%m-%d') if transaction else '' }}"
+             class="border p-2 w-full rounded" required/>
+    </div>
+
+    <!-- Input Deskripsi -->
+    <div>
+      <label class="block text-sm font-medium">Deskripsi Transaksi</label>
+      <input type="text" name="description"
+             value="{{ transaction.description if transaction else '' }}"
+             class="border p-2 w-full rounded" required/>
+    </div>
+
+    <!-- Entries Container -->
+    <div class="space-y-4" id="entries-container">
+      <label class="block text-sm font-medium">Entri Jurnal</label>
+      <!-- Template Entry -->
+      <template id="entry-template">
+        <div class="entry grid grid-cols-1 md:grid-cols-12 gap-4 items-end border p-4 rounded">
+          <div class="md:col-span-5">
+            <label class="block text-sm font-medium">Akun</label>
+            <input type="text" name="account[]" required class="border p-2 w-full rounded"/>
+          </div>
+          <div class="md:col-span-3">
+            <label class="block text-sm font-medium">Tipe</label>
+            <select name="entry_type[]" required class="border p-2 w-full rounded">
+              <option value="debit">Debit</option>
+              <option value="kredit">Kredit</option>
+            </select>
+          </div>
+          <div class="md:col-span-3">
+            <label class="block text-sm font-medium">Nominal (Rp)</label>
+            <input type="number" name="amount[]" min="0" required class="border p-2 w-full rounded"/>
+          </div>
+          <div class="md:col-span-1">
+            <button type="button" onclick="removeEntry(this)" class="bg-red-500 text-white p-2 rounded w-full">❌</button>
+          </div>
+        </div>
+      </template>
+
+      <!-- Existing or Initial Entry -->
+      {% if transaction %}
+        {% for entry in transaction.entries %}
+  <div class="entry grid grid-cols-1 md:grid-cols-12 gap-4 items-end border p-4 rounded">
+    <input type="hidden" name="entry_id[]" value="{{ entry.id }}">
+    <div class="md:col-span-5">
+      <input type="text" name="account[]" value="{{ entry.account }}"
+             class="border p-2 w-full rounded" required>
+    </div>
+    <div class="md:col-span-3">
+      <select name="entry_type[]" class="border p-2 w-full rounded">  <!-- Ganti name -->
+        <option value="debit" {% if entry.entry_type == 'debit' %}selected{% endif %}>Debit</option>
+        <option value="kredit" {% if entry.entry_type == 'kredit' %}selected{% endif %}>Kredit</option>
+      </select>
+    </div>
+    <div class="md:col-span-3">
+      <input type="number" name="amount[]" value="{{ entry.amount }}"
+             class="border p-2 w-full rounded" required>
+    </div>
+    <div class="md:col-span-1">
+      <button type="button" onclick="removeEntry(this)" 
+              class="bg-red-500 text-white p-2 rounded w-full">
+        ❌
+      </button>
+    </div>
+  </div>
+  {% endfor %}
+      {% else %}
+        <div class="entry grid grid-cols-1 md:grid-cols-12 gap-4 items-end border p-4 rounded">
+          <div class="md:col-span-5">
+            <input type="text" name="account[]" placeholder="Nama Akun" class="border p-2 w-full rounded" required/>
+          </div>
+          <div class="md:col-span-3">
+            <select name="entry_type[]" class="border p-2 w-full rounded">
+              <option value="debit">Debit</option>
+              <option value="kredit">Kredit</option>
+            </select>
+          </div>
+          <div class="md:col-span-3">
+            <input type="number" name="amount[]" min="0" placeholder="Jumlah" class="border p-2 w-full rounded" required/>
+          </div>
+          <div class="md:col-span-1">
+            <button type="button" onclick="removeEntry(this)" class="bg-red-500 text-white p-2 rounded w-full">❌</button>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex gap-4">
+      <button type="button" onclick="addEntry()" class="bg-blue-500 text-white px-4 py-2 rounded">+ Tambah Entri</button>
+      <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Simpan Transaksi</button>
+      <a href="{{ url_for('journal_list') }}" class="ml-4 text-gray-600 self-center">Batal</a>
+    </div>
+  </form>
+
+  <script>
+    function addEntry() {
+      const template = document.getElementById('entry-template');
+      const clone = template.content.cloneNode(true);
+      document.getElementById('entries-container').appendChild(clone);
+    }
+
+    function removeEntry(button) {
+      const entryDiv = button.closest('.entry');
+      if (document.querySelectorAll('.entry').length > 1) {
+        entryDiv.remove();
+      } else {
+        alert('Transaksi harus memiliki minimal 1 entri!');
+      }
+    }
+  </script>
+
+  <style>
+    .entry { background-color: #f8fafc; transition: all 0.2s;}  
+    .entry:hover { background-color: #f1f5f9; }
+  </style>
+{% endblock %}

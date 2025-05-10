@@ -1,0 +1,89 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mx-auto px-4">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Biaya Produksi</h1>
+    <a
+      href="{{ url_for('production_add') }}"
+      class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
+    >
+      + Tambah Baru
+    </a>
+  </div>
+
+  <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="min-w-full">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-6 py-3 text-left">Tanggal</th>
+            <th class="px-6 py-3 text-left">Luas Lahan</th>
+            <th class="px-6 py-3 text-right">Bibit</th>
+            <th class="px-6 py-3 text-right">Pupuk</th>
+            <th class="px-6 py-3 text-right">Obat</th>
+            <th class="px-6 py-3 text-right">Pekerja</th>
+            <th class="px-6 py-3 text-right">Listrik</th>
+            <th class="px-6 py-3 text-right">Air</th>
+            <th class="px-6 py-3 text-center">Tindakan</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y">
+          {% if items %} {% for i in items %}
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4">{{ i.date.strftime('%Y-%m-%d') }}</td>
+            <td class="px-6 py-4">{{ i.land_area }} m2</td>
+            <td class="px-6 py-4 text-right font-mono">
+              {{ i.seed_cost | rupiah }}
+            </td>
+            <td class="px-6 py-4 text-right font-mono">
+              {{ i.fertilizer_cost | rupiah }}
+            </td>
+            <td class="px-6 py-4 text-right font-mono">
+              {{ i.medicine_cost | rupiah }}
+            </td>
+            <td class="px-6 py-4 text-right font-mono">
+              {{ i.labor_cost | rupiah }}
+            </td>
+            <td class="px-6 py-4 text-right font-mono">
+              {{ i.electricity_cost | rupiah }}
+            </td>
+            <td class="px-6 py-4 text-right font-mono">
+              {{ i.water_cost | rupiah }}
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex justify-center space-x-3">
+                <a
+                  href="{{ url_for('production_edit', id=i.id) }}"
+                  class="text-blue-600 hover:text-blue-800"
+                >
+                  Edit
+                </a>
+                <span class="text-gray-400">|</span>
+                <form
+                  action="{{ url_for('production_delete', id=i.id) }}"
+                  method="POST"
+                  class="inline"
+                >
+                  <button
+                    type="submit"
+                    class="text-red-600 hover:text-red-800"
+                    onclick="return confirm('Yakin ingin menghapus data ini?')"
+                  >
+                    Hapus
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %} {% else %}
+          <tr>
+            <td colspan="9" class="px-6 py-4 text-center text-gray-500">
+              Belum ada data produksi
+            </td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %} {% block content %}
+<h1>Jurnal Umum</h1>
+<p>Saldo Saat Ini: {{ starting_balance | rupiah }}</p>
+
+<table>
+  <thead>
+    …
+  </thead>
+  <tbody>
+    {% set running = 0 %} {% for e in entries %} {% set running = running + (
+    e.nominal if e.entry_type=='income' else -e.nominal ) %}
+    <tr>
+      <td>{{ e.date.strftime('%d/%m/%Y') }}</td>
+      <td>{{ e.description }}</td>
+      <td>{{ e.info or '-' }}</td>
+      <td>{{ e.payment_method }}</td>
+      <td>{{ e.entry_type }}</td>
+      <td>{{ e.nominal | rupiah }}</td>
+      <td>{{ running | rupiah }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
